@@ -29,6 +29,9 @@ RSpec.describe "Go back from a belongs_to index link", type: :system do
 
       reviews_frame = has_many_field_wrapper(id: :reviews)
       scroll_to reviews_frame
+      # The page is short, so scrolling pulls every lazy association frame into view at once.
+      # They finish in any order and each one grows, which moves the link, so wait for all of them.
+      expect(page).to have_no_css("turbo-frame[src]:not([complete])")
 
       within(reviews_frame) do
         user_link = field_element_by_resource_id("user", review.to_param).find("a")
